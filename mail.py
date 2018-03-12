@@ -1,5 +1,13 @@
 # -*- coding: utf-8-*-
 
+'''
+
+author ：yanjx
+功能：用于发送邮件
+状态：已完成
+
+'''
+
 from email import encoders
 from email.header import Header
 from email.mime.text import MIMEText
@@ -33,7 +41,7 @@ msg = MIMEText(mail_msg, 'html', 'utf-8')
 
 msg['From'] = _format_addr('你猜我是谁 <%s>' % from_addr)
 msg['To'] = _format_addr('笨蛋 <%s>' % to_addr)
-msg['Subject'] = Header('来自温暖被窝的问候……', 'utf-8').encode()
+msg['Subject'] = Header('来自***的问候……', 'utf-8').encode()
 
 server = smtplib.SMTP_SSL(smtp_server, 465)
 server.set_debuglevel(1)

@@ -2,11 +2,11 @@ import requests
 import json
 import pandas
 
-def get_swaggerData(url ):
+def get_swaggerData(url):
     res = requests.get(url)
     res.encoding = "utf-8"
     jd = json.loads(res.text)
-    print(jd['paths'])  #输出所有接口
+    #print(jd['paths'])  #输出所有接口
     result = []
     for api_message in jd['paths']:
         result_list = {} #用于放每个请求的信息
@@ -20,32 +20,36 @@ def get_swaggerData(url ):
             result_list['版本标记'] = msg1[key2]['tags'] #tag信息
         result.append(result_list)
 
-    #print(result) #接口list
-    #print(len(result)) #接口数
-
-    #df = pandas.DataFrame(result)
-    #print(df.head(5)) 打印前几条数据
-    #df.to_excel("API.xlsx") #导出文件
-
+    # print(result)
+    # print(len(result))
     return result
 
-def get_tag_result(url,tag= ''):
-    get_swaggerData(url)
+def output_api(api_data,tag = ""):
+    df = pandas.DataFrame(api_data)
+    df.to_excel("API-"+tag+".xlsx") #导出文件
+    #print(df.head(5)) 打印前几条数据
+    return None
 
+
+def get_api_result(url,tag=None):
+    api_datas = get_swaggerData(url)
+    if tag is None:
+        search_api = get_swaggerData(url)
+        output_api(search_api,"all")
+
+    else:
+        search_api = []
+        for api in api_datas:
+            if tag in api["版本标记"]:
+                search_api.append(api)
+            else:
+                pass
+        print(search_api)
+        print(len(search_api))
+        output_api(search_api,tag)
+
+    return search_api
 
 if __name__ == '__main__':
     url = "http://xqy-finance.sit.91lyd.com/xqy-portal-web/finance/v2/api-docs"
-  #  flieName = 'output1.xlsx'
-    get_swaggerData(url)
-
-
-            # if "tags" in  msg1[key2]:
-            #     print(msg1[key2]['tags'])
-            #     #result['tags'] = msg1[key2]['tags']
-            # else:
-            #     result['tags'] = ''
-            # if tag in msg1[key2]['tags']:
-            #     result_list['tags'] = msg1[key2]['tags']
-            #     print(result_list)
-            # else:
-            #     pass
+    get_api_result(url)
